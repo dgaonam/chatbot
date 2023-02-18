@@ -11,8 +11,8 @@ import numpy as np
 import random
 from nltk.stem import WordNetLemmatizer
 from nltk.corpus import wordnet
-import spacy
-import stanza
+#import spacy
+#import stanza
 #from spacy_stanza import StanzaLanguage
 
 nltk.download('omw-1.4')
@@ -29,11 +29,11 @@ engine = pyttsx3.init()
 
 #RATE DEL ASISTENTE
 rate = engine.getProperty('rate')
-engine.setProperty('rate', 150)
+engine.setProperty('rate', 100)
 
 #VOZ DEL ASISTENTE
 voice_engine = engine.getProperty('voices')
-engine.setProperty('voice', voice_engine[0].id)
+engine.setProperty('voice', voice_engine[1].id)
 
 class chat_Bot():
     def __init__(self,name):
@@ -41,17 +41,17 @@ class chat_Bot():
         self.name = name
     
     def speech_to_text(self):
-        recognizer = sr.Recognizer()
-        with sr.Microphone() as micro:
+#        recognizer = sr.Recognizer()
+#        with sr.Microphone() as micro:
             print("Escuchando...")
-            audio = recognizer.listen(micro)
-            try:
-                self.text = recognizer.recognize_google(audio,language='es-MX',show_all=False)
-                print("Escucho: " + self.text)
-            except BaseException as err:
-                print(f"Unexpected {err=}, {type(err)=}")
-                print("no se capto ningun audio")
-                self.text = None
+#            audio = recognizer.listen(micro)
+#            try:
+#                self.text = recognizer.recognize_google(audio,language='es-MX',show_all=False)
+#                print("Escucho: " + self.text)
+#            except BaseException as err:
+#                print(f"Unexpected {err=}, {type(err)=}")
+#                print("no se capto ningun audio")
+#                self.text = None
     
     def wake_up(self,text):
         return True if self.name in text.lower() else False
@@ -63,8 +63,8 @@ class chat_Bot():
 
     @staticmethod        
     def talk(text):
-        #engine.say(text)
-        #engine.runAndWait()
+        engine.say(text)
+        engine.runAndWait()
         print("\n") 
 
     # preprocessamento input utente
@@ -130,8 +130,10 @@ if __name__=="__main__":
     ai.words = pickle.load(open('data/words.pkl','rb'))
     ai.classes = pickle.load(open('data/classes.pkl','rb'))
     ai.intents = json.loads(open('intents.json',encoding='utf8').read())
+    ai.text_to_speech(ai,"Bienvenido")
     while True:
         #ai.speech_to_text()
+        
         ai.text = str(input(""))
         if ai.text is not None:
             try:

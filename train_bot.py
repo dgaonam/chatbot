@@ -1,6 +1,6 @@
 from base64 import encode
 import nltk
-#nltk.download('punkt')
+nltk.download('punkt')
 from nltk.stem import WordNetLemmatizer
 
 import json
@@ -19,7 +19,7 @@ import tensorflow
 words = []
 classes = []
 documents = []
-ignore_words = ['?', '!',',','.','te','la','es']
+ignore_words = ['?', '!',',','.','la','es','¿','!','de','por']
 data_file = open('intents.json',encoding='utf8').read()
 intents = json.loads(data_file)
 
@@ -63,17 +63,17 @@ train_y = list(training[:,1])
 
 # creazione del modello
 model = Sequential()
-model.add(Dense(128, input_shape=(len(train_x[0]),), activation='relu'))
+model.add(Dense(128, input_shape=(len(train_x[0]),), activation='selu'))
 model.add(Dropout(0.5))
 model.add(Dense(64, activation='relu'))
 model.add(Dropout(0.5))
 model.add(Dense(len(train_y[0]), activation='softmax'))
 
-optimizer =  tensorflow.keras.optimizers.Adam(learning_rate=0.01)
+optimizer =  tensorflow.keras.optimizers.Adam(learning_rate=0.1)
 model.compile(loss='categorical_crossentropy', optimizer=optimizer, metrics=['accuracy'])
 
 #fitting and saving the model
-hist = model.fit(np.array(train_x), np.array(train_y), epochs=1000, batch_size=10, verbose=0)#validation_data=(x_val,y_val)
+hist = model.fit(np.array(train_x), np.array(train_y), epochs=800, batch_size=10, verbose=1)#validation_data=(x_val,y_val)
 print("Evaluate model on test data")
 results = model.evaluate(np.array(train_x), np.array(train_y), batch_size=128)
 print("test loss, test acc:", results)
